@@ -9,6 +9,7 @@ Bastion servers on AWS using Terraform
 
 * install [Terraform](https://www.terraform.io/) and add it to your PATH.
 * clone this repo.
+* `terraform get`
 
 ## Configuration
 

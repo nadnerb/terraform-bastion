@@ -1,3 +1,6 @@
+provider "aws" {
+  region = "${var.aws_region}"
+}
 
 ##############################################################################
 # Bastion Server
@@ -20,7 +23,7 @@ resource "aws_security_group" "bastion" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = ["${var.allowed_cidr_blocks}"]
+    cidr_blocks = ["${split(",", var.allowed_cidr_blocks)}"]
     self = false
   }
 
@@ -28,7 +31,7 @@ resource "aws_security_group" "bastion" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = ["${var.internal_cidr_blocks}"]
+    cidr_blocks = ["${split(",", var.internal_cidr_blocks)}"]
   }
 
   tags = {
@@ -56,18 +59,18 @@ resource "aws_route_table" "bastion" {
 resource "aws_subnet" "bastion_a" {
   vpc_id = "${var.vpc_id}"
   availability_zone = "${concat(var.aws_region, "a")}"
-  cidr_block = "${var.aws_bastion_subnet_cidr_a}"
+  cidr_block = "${var.bastion_subnet_cidr_a}"
 
   tags {
-    Name = "security subnet a"
+    Name = "bastion subnet a"
     stream = "${var.stream_tag}"
   }
 }
 
 resource "aws_subnet" "bastion_b" {
-  vpc_id = "${var.aws_parent_vpc_id}"
+  vpc_id = "${var.vpc_id}"
   availability_zone = "${concat(var.aws_region, "b")}"
-  cidr_block = "${var.aws_bastion_subnet_cidr_b}"
+  cidr_block = "${var.bastion_subnet_cidr_b}"
 
   tags {
     Name = "bastion subnet b"
@@ -91,7 +94,7 @@ module "bastion_servers_a" {
   name = "bastion_server_a"
   stream = "${var.stream_tag}"
   key_path = "${var.key_path}"
-  ami = "${lookup(var.amazon_nat_ami, var.aws_region)}"
+  ami = "${lookup(var.amazon_bastion_amis, var.aws_region)}"
   key_name = "${var.key_name}"
   security_groups = "${aws_security_group.bastion.id}"
   subnet_id = "${aws_subnet.bastion_a.id}"
@@ -104,7 +107,7 @@ module "bastion_servers_b" {
   name = "bastion_server_b"
   stream = "${var.stream_tag}"
   key_path = "${var.key_path}"
-  ami = "${lookup(var.amazon_nat_ami, var.aws_region)}"
+  ami = "${lookup(var.amazon_bastion_amis, var.aws_region)}"
   key_name = "${var.key_name}"
   security_groups = "${aws_security_group.bastion.id}"
   subnet_id = "${aws_subnet.bastion_b.id}"

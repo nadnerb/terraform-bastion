@@ -48,6 +48,25 @@ variable "vpc_id" {
   description = "VPC id"
 }
 
+variable "allowed_cidr_blocks"{
+  default = "0.0.0.0/0"
+}
+
+variable "internal_cidr_blocks"{
+  default = "0.0.0.0/0"
+}
+
+### MANDATORY ###
+variable "bastion_subnet_cidr_a"{
+}
+
+### MANDATORY ###
+variable "bastion_subnet_cidr_b"{
+}
+
+### MANDATORY ###
+variable "internet_gateway_id"{
+}
 ###################################################################
 # Bastion configuration below
 ###################################################################
