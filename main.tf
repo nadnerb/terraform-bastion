@@ -7,7 +7,7 @@ provider "aws" {
 ##############################################################################
 resource "aws_route53_record" "bastion" {
    zone_id = "${var.public_hosted_zone_id}"
-   name = "bastion.${var.public_hosted_zone_name}"
+   name = "${var.public_hosted_zone_name}"
    type = "A"
    ttl = "300"
    records = ["${ module.bastion_servers_a.public-ips}","${ module.bastion_servers_b.public-ips}"]
