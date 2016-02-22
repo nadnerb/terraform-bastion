@@ -3,7 +3,7 @@ Bastion servers on AWS using Terraform
 
 ## Requirements
 
-* Terraform >= v0.5.1
+* Terraform >= v0.6.8
 
 ## Installation
 
@@ -63,7 +63,3 @@ If all looks good, lets build our infrastructure!
 terraform apply -var-file ~/.aws/default.tfvars -state='environment/development.tfstate'
 ```
 
-## TODO
-
-* Finish This README
-* Move subnet provisioning into bastion module
